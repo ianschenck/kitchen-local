@@ -14,35 +14,46 @@ module Kitchen
         provisioner.create_sandbox
         sandbox_dirs = Dir.glob("#{provisioner.sandbox_path}/*")
 
-        system(provisioner.install_command)
-        system(provisioner.init_command)
+        run(provisioner.install_command)
+        run(provisioner.init_command)
         transfer_path(sandbox_dirs, provisioner[:root_path])
-        system(provisioner.prepare_command)
-        system(provisioner.run_command)
+        provisioner.prepare_command && run(provisioner.prepare_command)
+        provisioner.run_command && run(provisioner.run_command)
       ensure
         provisioner && provisioner.cleanup_sandbox
       end
 
       def setup(state)
-        system(busser_setup_cmd)
+        busser_setup_cmd && run(busser_setup_cmd)
       end
 
       def verify(state)
-        system(busser_sync_cmd)
-        system(busser_run_cmd)
+        busser_sync_cmd && run(busser_sync_cmd)
+        busser_run_cmd && run(busser_run_cmd)
       end
 
       def destroy(state) ; end
 
       def ssh(ssh_args, command)
-        system(command)
+        command && run(command)
       end
 
       protected
 
+      def run(command)
+        system({
+                 "GEM_PATH" => nil,
+                 "GEM_HOME" => nil,
+                 "BUNDLE_BIN_PATH" => nil,
+                 "BUNDLE_GEMFILE" => nil,
+                 "RUBYOPT" => nil,
+                 "RUBYLIB" => nil
+               },command)
+      end
+
       def transfer_path(locals, remote)
         return if locals.nil? || Array(locals).empty?
-        locals.each { |local| FileUtils.cp(local, remote) }
+        locals.each { |local| `cp -r #{local} #{remote}` }
       end
 
     end
