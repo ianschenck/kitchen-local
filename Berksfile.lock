@@ -1,0 +1,5 @@
+DEPENDENCIES
+  hello_world
+
+GRAPH
+  hello_world (0.0.3)

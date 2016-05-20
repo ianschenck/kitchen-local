@@ -22,8 +22,9 @@ local driver for test-kitchen for running directly against the current, local ma
 
 == FEATURES:
 
-ssh driver for test-kitchen for any running server with an ip address
+* local driver/transport for test-kitchen to run commands locally
 
 EOF
 
+  s.add_runtime_dependency 'test-kitchen'
 end

@@ -1,0 +1,19 @@
+---
+driver:
+  name: local
+transport:
+  name: local
+provisioner:
+  sudo: false
+  require_chef_omnibus: false
+  chef_omnibus_root: /opt/chefdk
+verifier:
+  chef_omnibus_root: /opt/chefdk
+
+platforms:
+  - name: ubuntu-14.04
+
+suites:
+  - name: default
+    run_list:
+      - recipe[hello_world]

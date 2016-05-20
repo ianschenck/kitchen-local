@@ -1,0 +1,24 @@
+language: c
+sudo: false
+
+os: linux
+dist: trusty
+
+addons:
+  apt:
+    sources:
+      - chef-stable-trusty
+    packages:
+      - chefdk
+
+cache:
+  apt: true
+
+before_install:
+- chef --version
+
+install:
+- chef exec bundle install --local
+
+script:
+- chef exec bundle exec kitchen test default-ubuntu-1404 -l debug
